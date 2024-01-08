@@ -1,3 +1,2 @@
-N=int(input())
-for i in range(1,N+1):
-    print(i)
+N = int(input())
+print("\n".join(map(str, range(1, N + 1))))
