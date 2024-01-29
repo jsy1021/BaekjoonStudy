@@ -7,4 +7,4 @@ dp[1]=arr[1]
 for i in range(2,N+1):
     dp[i]=max(dp[i-1]*arr[i],arr[i])
 
-print('%0.3f' %max(dp))
+print('{:.3f}'.format(max(dp)))
