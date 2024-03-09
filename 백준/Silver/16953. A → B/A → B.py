@@ -1,19 +1,19 @@
-from collections import deque
-A, B=map(int,input().split())
-
-q=deque()
-q.append((A,1))
-
-while q:
-    now, count=q.popleft()
-    
-    if now >B:
-        continue
-    if now ==B:
-        print(count)
+import sys
+input=sys.stdin.readline
+a,b=map(int,input().split())
+count=1
+while True:
+    if b==a:
         break
-    q.append((now*2,count+1))
-    q.append((int(str(now)+"1"),count+1))
-else:
-    print(-1)
+    elif (b%2!=0 and b%10!=1)or (b<a):
+        count=-1
+        break
+    else:
+        if b%10==1:
+            b//=10
+            count+=1
+        else:
+            b//=2
+            count+=1
+print(count)
     
