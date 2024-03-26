@@ -1,41 +1,35 @@
 import sys
-from collections import deque
-input = sys.stdin.readline
- 
-def bfs(x, y):
-    cnt = 0
-    queue = deque()
-    queue.append((x, y))
-    visited[x][y] = True
- 
-    while queue:
-        x, y = queue.popleft()
- 
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
- 
-            if 0 <= nx < n and 0 <= ny < m:
-                if graph[nx][ny] == 1 and not visited[nx][ny]:
-                    visited[nx][ny] = True
-                    queue.append((nx, ny))
-                    cnt += 1   
-    return cnt + 1
- 
-dx = [1, 0, -1, 0]
+sys.setrecursionlimit(10**6)
+input=sys.stdin.readline
+
+def DFS(y, x):
+    global field, dy, dx, N, M, comp
+    
+    for i in range(4):
+        ny = y + dy[i]
+        nx = x + dx[i]
+
+        if 0 <= ny < N and 0 <= nx < M and field[ny][nx]:
+            field[ny][nx] = 0
+            comp += 1
+            DFS(ny, nx)
+
+N, M, K = map(int, input().split())
+field = [[0 for i in range(M)] for j in range(N)]
 dy = [0, 1, 0, -1]
- 
-n, m, k = map(int, input().split())
-graph = [[0] * m for _ in range(n)]
-visited = [[False] * m for _ in range(n)]
- 
-for i in range(k):    # plot food
+dx = [1, 0, -1, 0]
+
+for _ in range(K):
     r, c = map(int, input().split())
-    graph[r-1][c-1] = 1
- 
-max_food = 0
-for i in range(n):
-    for j in range(m):
-        if graph[i][j] == 1 and not visited[i][j]:
-            max_food = max(max_food, bfs(i, j))    
-print(max_food)
+    field[r-1][c-1] = 1
+
+size = -1
+for i in range(N):
+    for j in range(M):
+        if field[i][j]:
+            field[i][j] = 0
+            comp = 1
+            DFS(i, j)
+            size = max(comp, size)
+
+print(size)
