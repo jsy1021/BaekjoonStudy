@@ -7,6 +7,7 @@ if n==1:
    print(dp[1])
 if n==2:
    dp[2]=1
+   print(dp[2])
 MOD=1000000007
 if n>=3:
    for i in range(3,n+1):
