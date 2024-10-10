@@ -1,3 +1,5 @@
 # BaekjoonStudy
 This is a auto push repository for Baekjoon Online Judge created with [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub).
-[![Solved.ac Profile](http://mazassumnida.wtf/api/generate_badge?boj=jsy1021)](https://solved.ac/jsy1021)<br/>
+알고리즘 푼 기록
+[![Solved.ac Profile](http://mazassumnida.wtf/api/v2/generate_badge?boj=jangsuyeong923)](https://solved.ac/jangsuyeong923/)
+
