@@ -30,96 +30,105 @@
 // cout << AB;                          // long long 변수 1개 출력하는 예제
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-#include<iostream>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <map>
+
 #define N 100
 #define K 1000
+
 using namespace std;
-typedef struct {
-	int cnt;// 미생물 수
-	int dir; //진행 방향
-	int maxcnt;
-}node;
+
+struct Node {
+	int cnt = 0;   // 미생물 수
+	int dir = 0;   // 진행 방향
+};
+
 int n, m, k;
-node map[N + 1][N + 1];
-node next_map[N + 1][N + 1];
-int direction[5][2] = { {0,0},{-1,0},{1,0},{0,-1},{0,1} };
+Node cellMap[N + 1][N + 1];
+const int direction[5][2] = { {0, 0}, {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
 void move() {
+	// 현재 위치의 변화를 임시로 저장할 맵을 사용
+	Node temp_map[N + 1][N + 1] = { 0 };
+	int max_cnt[N + 1][N + 1] = { 0 };  // 최대 미생물 수를 추적
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			if (map[i][j].cnt > 0)//미생물이 존재할 경우
-			{
-				int dir = map[i][j].dir;
+			if (cellMap[i][j].cnt > 0) { // 미생물이 존재할 경우
+				int dir = cellMap[i][j].dir;
 				int next_x = i + direction[dir][0];
 				int next_y = j + direction[dir][1];
 
-				//약품 처리된 곳을 갈 경우
+				// 약품 처리된 가장자리
 				if (next_x == 0 || next_x == n - 1 || next_y == 0 || next_y == n - 1) {
-					next_map[next_x][next_y].cnt = map[i][j].cnt / 2;
-					if (dir == 1)
-						next_map[next_x][next_y].dir = 2;
-					else if (dir == 2)
-						next_map[next_x][next_y].dir = 1;
-					else if (dir == 3)
-						next_map[next_x][next_y].dir = 4;
-					else if (dir == 4)
-						next_map[next_x][next_y].dir = 3;
-				}
-				//일반 좌표를 갈 경우
-				else {
-					if (next_map[next_x][next_y].maxcnt > 0) {
-						next_map[next_x][next_y].cnt += map[i][j].cnt;//미생물 합산
-						
-						if (next_map[next_x][next_y].maxcnt < map[i][j].cnt) {
-							next_map[next_x][next_y].maxcnt = map[i][j].cnt;
-							next_map[next_x][next_y].dir = map[i][j].dir;
-						}
+					int new_cnt = cellMap[i][j].cnt / 2; // 절반으로 감소
+					int new_dir = (dir == 1) ? 2 : (dir == 2) ? 1 : (dir == 3) ? 4 : 3;
+
+					if (new_cnt > 0) {
+						temp_map[next_x][next_y].cnt += new_cnt;
+						temp_map[next_x][next_y].dir = new_dir;
 					}
-					else {
-						next_map[next_x][next_y].cnt = map[i][j].cnt;
-						next_map[next_x][next_y].maxcnt = next_map[next_x][next_y].cnt;
-						next_map[next_x][next_y].dir = map[i][j].dir;
+				}
+				// 일반적인 이동
+				else {
+					temp_map[next_x][next_y].cnt += cellMap[i][j].cnt;
+
+					// 최대값이 변경될 때만 방향 갱신
+					if (cellMap[i][j].cnt > max_cnt[next_x][next_y]) {
+						max_cnt[next_x][next_y] = cellMap[i][j].cnt;
+						temp_map[next_x][next_y].dir = cellMap[i][j].dir;
 					}
 				}
 			}
 		}
 	}
+
+	// 이동 후 임시 맵을 원래 맵으로 복사
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			map[i][j] = next_map[i][j];
-			next_map[i][j] = { 0,0,0 };
+			cellMap[i][j] = temp_map[i][j];
 		}
 	}
 }
+
 int getAnswer() {
 	int sum = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			sum += map[i][j].cnt;
+			sum += cellMap[i][j].cnt;
 		}
 	}
 	return sum;
 }
+
 int main() {
 	int T;
 	cin >> T;
-	for (int i = 1; i <= T; i++) {
-		
-		int x, y, cnt, dir;
+
+	for (int t = 1; t <= T; t++) {
 		cin >> n >> m >> k;
+
+		// 초기화
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				map[i][j] = { 0,0,0 };
-			}
+			fill(cellMap[i], cellMap[i] + n, Node{ 0, 0 });
 		}
-		for (int j = 0; j < k; j++) {
+
+		// 입력받기
+		for (int i = 0; i < k; i++) {
+			int x, y, cnt, dir;
 			cin >> x >> y >> cnt >> dir;
-			map[x][y] = { cnt,dir,cnt };
+			cellMap[x][y] = { cnt, dir };
 		}
-		for (int j = 0; j < m; j++) {
+
+		// m번 이동
+		for (int i = 0; i < m; i++) {
 			move();
 		}
-		cout << "#" << i << " " << getAnswer() << endl;
-		
+
+		cout << "#" << t << " " << getAnswer() << endl;
 	}
+
 	return 0;
 }
