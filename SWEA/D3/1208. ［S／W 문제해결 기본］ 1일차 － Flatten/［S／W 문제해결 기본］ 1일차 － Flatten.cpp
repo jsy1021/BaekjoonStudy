@@ -1,35 +1,23 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include<iostream>
+#include<algorithm>
+#include<vector>
 using namespace std;
-
 int main() {
-    for (int test_case = 1; test_case <= 10; test_case++) {
-        int dump;
-        cin >> dump;
-
-        // 상자 리스트 입력
-        vector<int> arr_box(100);
+    for (int i = 1; i <= 10; i++) {
+        int dumpCnt;
+        cin >> dumpCnt;
+        vector<int>arr(100);
         for (int j = 0; j < 100; j++) {
-            cin >> arr_box[j];
+            cin >> arr[j];
         }
-
-      
-        for (int i = 0; i < dump; i++) {
-            
-            auto maxElement = max_element(arr_box.begin(), arr_box.end());
-            auto minElement = min_element(arr_box.begin(), arr_box.end());
-
-            
+        for (int j = 0; j < dumpCnt; j++) {
+            auto maxElement = max_element(arr.begin(), arr.end());
+            auto minElement = min_element(arr.begin(), arr.end());
             (*maxElement)--;
             (*minElement)++;
         }
-
-        // 최종 차이 계산
-        int gap = *max_element(arr_box.begin(), arr_box.end()) - *min_element(arr_box.begin(), arr_box.end());
-
-        // 결과 출력
-        cout << "#" << test_case << " " << gap << endl;
+        int diff = *max_element(arr.begin(), arr.end()) - *min_element(arr.begin(), arr.end());
+        cout << "#" << i << " " << diff << endl;
     }
     return 0;
 }
