@@ -9,20 +9,18 @@ int findStartX(int startY, int startX) {
     int x = startX;
 
     // 도착점부터 위로 올라가면서 경로를 추적
-    while (startY >= 0) {
-        // 1. 오른쪽으로 이동할 수 있으면 계속 오른쪽으로 이동
-        if (x + 1 < 100 && arr[startY][x + 1] == 1) {
-            do {
-                x++;  // 오른쪽으로 이동
-            } while (x + 1 < 100 && arr[startY][x + 1] == 1);
+    while (startY > 0) {
+        // 1. 왼쪽으로 이동할 수 있으면 계속 왼쪽으로 이동
+        if (x - 1 >= 0 && arr[startY][x - 1] == 1) {
+            while (x - 1 >= 0 && arr[startY][x - 1] == 1)
+                x--;
         }
-        // 2. 왼쪽으로 이동할 수 있으면 계속 왼쪽으로 이동
-        else if (x - 1 >= 0 && arr[startY][x - 1] == 1) {
-            do {
-                x--;  // 왼쪽으로 이동
-            } while (x - 1 >= 0 && arr[startY][x - 1] == 1);
+        else if (x + 1 < 100 && arr[startY][x + 1] == 1) {
+            
+            while (x + 1 < 100 && arr[startY][x + 1] == 1)
+                x++;
         }
-        // 3. 위로 한 칸 이동
+       
         startY--;
     }
 
