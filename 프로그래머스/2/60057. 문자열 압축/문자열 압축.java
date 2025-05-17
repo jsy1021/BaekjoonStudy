@@ -1,30 +1,38 @@
+import java.util.*;
 class Solution {
-     public int solution(String s) {
-        int answer = s.length();
+    public int solution(String s) {
+    int answer = s.length();
 
-        for (int i = 1; i <= s.length() / 2; i++) {
-            StringBuilder result = new StringBuilder();
-            String base = s.substring(0, i);
-            int count = 1;
+    for (int step = 1; step <= s.length() / 2; step++) {
+        StringBuilder compressed = new StringBuilder();
+        String prev = s.substring(0, step);
+        int count = 1;
 
-            for (int j = i; j <= s.length(); j += i) {
-                int endIdx = Math.min(j + i, s.length());
-                String compare = s.substring(j, endIdx);
-
-                if (base.equals(compare)) {
-                    count++;
-                } else {
-                    if (count > 1) result.append(count);
-                    result.append(base);
-                    base = compare;
-                    count = 1;
-                }
+        for (int j = step; j <= s.length(); j += step) {
+            String next;
+            if (j + step <= s.length()) {
+                next = s.substring(j, j + step);
+            } else {
+                next = s.substring(j);
             }
 
-            result.append(base); // 마지막 조각 추가
-            answer = Math.min(answer, result.length());
+            if (prev.equals(next)) {
+                count++;
+            } else {
+                if (count > 1) compressed.append(count);
+                compressed.append(prev);
+                prev = next;
+                count = 1;
+            }
         }
 
-        return answer;
+        // 마지막 남은 문자열 처리
+        if (count > 1) compressed.append(count);
+        compressed.append(prev);
+
+        answer = Math.min(answer, compressed.length());
     }
+
+    return answer;
+}
 }
