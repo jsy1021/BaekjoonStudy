@@ -1,74 +1,73 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
 import java.util.*;
 
-class Node implements Comparable<Node> {
-    int index, weight;
+public class Main{
+    //백준 1753 최단 경로
+    public static int V, E, K;
+    public static int []distance;
+    public static boolean [] visited;
+    public static ArrayList<ArrayList<Node>>list=new ArrayList<>();
+    public static PriorityQueue<Node> pq=new PriorityQueue<>();
+    static class Node implements Comparable<Node> {
+        int node;
+        int value;
 
-    public Node(int index, int weight) {
-        this.index = index;
-        this.weight = weight;
+        Node(int node, int value){
+            this.node = node;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return this.value - o.value; // 가중치 오름차순
+        }
     }
-
-    @Override
-    public int compareTo(Node o) {
-        return this.weight - o.weight;
-    }
-}
-
-public class Main {
-    static final int INF = Integer.MAX_VALUE;
-    static List<List<Node>> graph = new ArrayList<>();
-    static int[] distance;
-
-    public static void dijkstra(int start) {
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        distance[start] = 0;
-        pq.offer(new Node(start, 0));
-
-        while (!pq.isEmpty()) {
-            Node now = pq.poll();
-            int current = now.index;
-
-            if (distance[current] < now.weight)
-                continue;
-
-            for (Node next : graph.get(current)) {
-                int cost = distance[current] + next.weight;
-                if (cost < distance[next.index]) {
-                    distance[next.index] = cost;
-                    pq.offer(new Node(next.index, cost));
-                }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st=new StringTokenizer(br.readLine());
+        V = Integer.parseInt(st.nextToken());
+        E = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(br.readLine());
+        distance=new int[V+1];
+        visited=new boolean[V+1];
+        for(int i=0;i<=V;i++){
+            list.add(new ArrayList<>());
+        }
+        for(int i=0;i<=V;i++){
+            distance[i]=Integer.MAX_VALUE;
+        }
+        for(int i=0;i<E;i++){
+            st=new StringTokenizer(br.readLine());
+            int u=Integer.parseInt(st.nextToken());
+            int v=Integer.parseInt(st.nextToken());
+            int w=Integer.parseInt(st.nextToken());
+            list.get(u).add(new Node(v,w));
+        }
+        pq.add(new Node(K,0));
+        distance[K]=0;
+        while(!pq.isEmpty()){
+            Node current=pq.poll();
+            int currentNode=current.node;
+            visited[currentNode]=true;
+            for(Node tmp :list.get(currentNode)){
+               int nextNode=tmp.node;
+               int nextValue=tmp.value;
+               if(distance[nextNode]>distance[currentNode]+nextValue){//최소 거리로 업데이트하기
+                   distance[nextNode]=distance[currentNode]+nextValue;
+                   pq.add(new Node(nextNode,distance[nextNode]));
+               }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int v = sc.nextInt();
-        int e = sc.nextInt();
-        int s = sc.nextInt();
-
-        distance = new int[v + 1];
-        Arrays.fill(distance, INF);
-
-        for (int i = 0; i <= v; i++) {
-            graph.add(new ArrayList<>());
-        }
-
-        for (int i = 0; i < e; i++) {
-            int u = sc.nextInt();
-            int vv = sc.nextInt(); // 변수명 중복 방지
-            int w = sc.nextInt();
-            graph.get(u).add(new Node(vv, w));
-        }
-
-        dijkstra(s);
-
-        for (int i = 1; i <= v; i++) {
-            if (distance[i] == INF) {
-                System.out.println("INF");
-            } else {
+        for(int i=1;i<=V;i++){
+            if(visited[i]){
                 System.out.println(distance[i]);
+            }
+            else{
+                System.out.println("INF");
             }
         }
     }
